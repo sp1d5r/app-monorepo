@@ -1,0 +1,5 @@
+
+
+> @app-monorepo/ui@0.1.0 build /Users/elijahahmad/app-monorepo/packages/ui
+> tsc --project tsconfig.json --outDir dist
+

@@ -1,0 +1,39 @@
+{
+  "name": "@app-monorepo/ui",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tamagui.config": {
+      "import": "./dist/tamagui.config.js",
+      "types": "./dist/tamagui.config.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json --outDir dist",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.72.17",
+    "tamagui": "^1.x",
+    "@tamagui/core": "^1.x",
+    "@tamagui/shorthands": "^1.x",
+    "@tamagui/themes": "^1.x",
+    "@tamagui/font-inter": "^1.x"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-native": "^0.72.0",
+    "typescript": "^4.x"
+  },
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-native": "0.72.17"
+  }
+}
+

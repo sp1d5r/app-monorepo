@@ -1,0 +1,25 @@
+{
+  "name": "app-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@8.15.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "storybook": "pnpm --filter @app-monorepo/storybook dev",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "clean:workspaces": "turbo run clean",
+    "install:clean": "pnpm clean && pnpm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "turbo": "^2.4.0"
+  }
+}
