@@ -21,5 +21,8 @@
   "description": "",
   "devDependencies": {
     "turbo": "^2.4.0"
+  },
+  "dependencies": {
+    "@tamagui/lucide-icons": "^1.124.4"
   }
 }

@@ -45,5 +45,28 @@ module.exports = ({ config }) => {
     ],
   });
 
+  // Add support for React Native
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    'react-native$': 'react-native-web',
+  };
+
+  // Handle React Native modules
+  config.module.rules.push({
+    test: /\.(js|jsx|ts|tsx)$/,
+    exclude: /node_modules\/(?!(react-native-|@react-native|@tamagui|react-native-web|@expo|expo)).*/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          '@babel/preset-env',
+          '@babel/preset-react',
+          '@babel/preset-typescript',
+          '@babel/preset-flow'
+        ],
+      },
+    },
+  });
+
   return config;
 }; 
