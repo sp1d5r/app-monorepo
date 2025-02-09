@@ -1,10 +1,12 @@
 # Dependencies
-node_modules/*
-dist/*
+node_modules
+**/node_modules
+dist
+**/dist
 
 # Build outputs
-build/
-.next/
+build
+.next
 
 # Environment variables
 .env
@@ -19,11 +21,16 @@ yarn-debug.log*
 yarn-error.log*
 
 # IDE files
-.idea/
-.vscode/
+.idea
+.vscode
 *.swp
 *.swo
 
 # OS files
 .DS_Store
 Thumbs.db
+
+
+packages/storybook/node_modules
+packages/storybook/node_modules/**
+packages/storybook/dist/*
