@@ -4,8 +4,8 @@ module.exports = ({ config }) => {
   // Handle workspace packages
   config.resolve.alias = {
     ...config.resolve.alias,
-    '@app-monorepo/ui': path.resolve(__dirname, '../../ui/src'),
-    '@app-monorepo/ui/tamagui.config': path.resolve(__dirname, '../../ui/tamagui.config.ts'),
+    '@app-monorepo/ui': path.resolve(__dirname, '../../ui/dist'),
+    '@app-monorepo/ui/tamagui.config': path.resolve(__dirname, '../../ui/dist/tamagui.config.js'),
   };
 
   // Handle React Native Web
@@ -29,6 +29,7 @@ module.exports = ({ config }) => {
       path.resolve(__dirname, '../../ui/tamagui.config.ts'),
       path.resolve(__dirname, '../stories'),
     ],
+    exclude: /node_modules/,
     use: [
       {
         loader: require.resolve('babel-loader'),
@@ -38,6 +39,7 @@ module.exports = ({ config }) => {
             '@babel/preset-react',
             '@babel/preset-typescript'
           ],
+          plugins: ['react-native-web'],
         },
       },
     ],

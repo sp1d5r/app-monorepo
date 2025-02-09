@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.json --outDir dist",
+    "dev": "tsc --project tsconfig.json --outDir dist --watch",
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {

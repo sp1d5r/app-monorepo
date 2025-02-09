@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/types";
-import { config } from '@app-monorepo/ui';
+import { config } from '@app-monorepo/ui/tamagui.config';
 
 const preview: Preview = {
   parameters: {
