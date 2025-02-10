@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '@app-monorepo/ui/src/Button';
+import { Button } from '@app-monorepo/ui';
 import { Mail } from '@tamagui/lucide-icons';
 
 const meta = {
