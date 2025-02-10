@@ -3,7 +3,7 @@ import type { StorybookConfig } from "@storybook/react-webpack5";
 const config: StorybookConfig = {
   stories: [
     "../stories/**/*.mdx",
-    "../stories/**/*.stories.@(js|jsx|ts|tsx)"
+    "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
   addons: [
     "@storybook/addon-links",
@@ -13,6 +13,16 @@ const config: StorybookConfig = {
   framework: {
     name: "@storybook/react-webpack5",
     options: {}
+  },
+  webpackFinal: async (config) => {
+    // Add support for workspace packages
+    if (config.resolve) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@app-monorepo/ui': require.resolve('../../../packages/ui/src'),
+      };
+    }
+    return config;
   },
   docs: {
     autodocs: "tag",
