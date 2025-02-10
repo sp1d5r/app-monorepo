@@ -3,13 +3,13 @@ import { createInterFont } from '@tamagui/font-inter'
 import { shorthands } from '@tamagui/shorthands'
 import { createAnimations } from '@tamagui/animations-moti'
 import { createTokens } from '@tamagui/core'
+import { defaultConfig } from '@tamagui/config/v4'
 
 // Create our tokens
 const tokens = createTokens({
   color: {
     white: '#FFFFFF',
     black: '#000000',
-    
     gray100: '#f6f6f6',
     gray200: '#e9e9e9',
     gray300: '#DADADA',
@@ -46,13 +46,14 @@ const tokens = createTokens({
     $18: 72,
     $19: 76,
     $20: 80,
+    $true: 16,
   },
   size: {
     $0: 0,
     '$0.5': 2,
     $1: 4,
     '$1.5': 6,
-    $2: 8,
+    $2: 32,
     '$2.5': 10,
     $3: 12,
     '$3.5': 14,
@@ -165,6 +166,7 @@ const animations = createAnimations({
 })
 
 export default createTamagui({
+  ...defaultConfig,
   animations,
   defaultTheme: 'light',
   shouldAddPrefersColorThemes: true,

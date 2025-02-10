@@ -20,6 +20,7 @@ const config: StorybookConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         '@app-monorepo/ui': require.resolve('../../../packages/ui/src'),
+        '@app-monorepo/ui/tamagui.config': require.resolve('../../../packages/ui/tamagui.config.ts'),
       };
     }
     return config;

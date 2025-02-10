@@ -17,7 +17,7 @@
       "resolveJsonModule": true,
       "isolatedModules": true
     },
-    "include": ["src", "tamagui.config.ts"],
+    "include": ["src", "tamagui.config.ts", "index.ts"],
     "exclude": ["node_modules", "**/*.stories.tsx", "**/*.test.tsx"]
   }
   
