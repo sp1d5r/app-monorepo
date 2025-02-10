@@ -4,7 +4,7 @@
       "lib": ["dom", "dom.iterable", "esnext"],
       "jsx": "react-jsx",
       "module": "esnext",
-      "moduleResolution": "node",
+      "moduleResolution": "bundler",
       "baseUrl": ".",
       "strict": true,
       "esModuleInterop": true,
@@ -12,7 +12,10 @@
       "forceConsistentCasingInFileNames": true,
       "outDir": "dist",
       "declaration": true,
-      "types": ["react", "react-native"]
+      "composite": true,
+      "types": ["react", "react-native"],
+      "resolveJsonModule": true,
+      "isolatedModules": true
     },
     "include": ["src", "tamagui.config.ts"],
     "exclude": ["node_modules", "**/*.stories.tsx", "**/*.test.tsx"]

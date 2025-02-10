@@ -6,6 +6,8 @@ module.exports = ({ config }) => {
     ...config.resolve.alias,
     '@app-monorepo/ui': path.resolve(__dirname, '../../ui/dist'),
     '@app-monorepo/ui/tamagui.config': path.resolve(__dirname, '../../ui/dist/tamagui.config.js'),
+    'react-native$': 'react-native-web',
+    'react-native-svg': 'react-native-svg-web',
   };
 
   // Handle React Native Web
@@ -21,15 +23,10 @@ module.exports = ({ config }) => {
     ...config.resolve.extensions,
   ];
 
-  // Add transpilation for the UI package
+  // Add transpilation rules
   config.module.rules.push({
-    test: /\.(ts|tsx)$/,
-    include: [
-      path.resolve(__dirname, '../../ui/src'),
-      path.resolve(__dirname, '../../ui/tamagui.config.ts'),
-      path.resolve(__dirname, '../stories'),
-    ],
-    exclude: /node_modules/,
+    test: /\.(js|jsx|ts|tsx)$/,
+    exclude: /node_modules\/(?!(react-native-|@react-native|@tamagui|react-native-svg)).*/,
     use: [
       {
         loader: require.resolve('babel-loader'),
@@ -37,35 +34,13 @@ module.exports = ({ config }) => {
           presets: [
             ['@babel/preset-env', { targets: "defaults" }],
             '@babel/preset-react',
-            '@babel/preset-typescript'
+            '@babel/preset-typescript',
+            'module:metro-react-native-babel-preset'
           ],
           plugins: ['react-native-web'],
         },
       },
     ],
-  });
-
-  // Add support for React Native
-  config.resolve.alias = {
-    ...config.resolve.alias,
-    'react-native$': 'react-native-web',
-  };
-
-  // Handle React Native modules
-  config.module.rules.push({
-    test: /\.(js|jsx|ts|tsx)$/,
-    exclude: /node_modules\/(?!(react-native-|@react-native|@tamagui|react-native-web|@expo|expo)).*/,
-    use: {
-      loader: 'babel-loader',
-      options: {
-        presets: [
-          '@babel/preset-env',
-          '@babel/preset-react',
-          '@babel/preset-typescript',
-          '@babel/preset-flow'
-        ],
-      },
-    },
   });
 
   return config;

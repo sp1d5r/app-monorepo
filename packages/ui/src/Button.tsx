@@ -1,62 +1,59 @@
 import React from 'react'
-import { styled, Button as TamaguiButton, GetProps, Stack } from 'tamagui'
-import { Spinner } from './Spinner'
+import { styled, Button as TamaguiButton, GetProps, YStack } from 'tamagui'
+import { Spinner } from './Spinner' // You'll need to create this
 
 // Customize TamaguiButton
 const CustomButton = styled(TamaguiButton, {
   name: 'Button',
-  height: '$size.md',
-  paddingHorizontal: '$space.md',
-  borderRadius: '$radius.sm',
-  
+  backgroundColor: '$background',
+  borderRadius: '$4',
+  paddingVertical: '$2',
+  paddingHorizontal: '$3',
+
   variants: {
     variant: {
       primary: {
-        backgroundColor: '$primary',
-        color: '$white',
-        hoverStyle: {
-          opacity: 0.9,
-        },
+        backgroundColor: '$blue10',
+        color: 'white',
       },
       secondary: {
-        backgroundColor: '$secondary',
-        color: '$black',
-        hoverStyle: {
-          opacity: 0.9,
-        },
+        backgroundColor: '$yellow10',
+        color: '$color',
       },
       outline: {
         backgroundColor: 'transparent',
         borderWidth: 1,
-        borderColor: '$primary',
-        color: '$primary',
+        borderColor: '$blue10',
+        color: '$blue10',
       },
       ghost: {
         backgroundColor: 'transparent',
-        color: '$primary',
+        color: '$blue10',
         hoverStyle: {
-          backgroundColor: '$gray100',
+          backgroundColor: '$blue2',
         },
       },
     },
     size: {
       sm: {
-        height: '$size.sm',
-        paddingHorizontal: '$space.sm',
-        fontSize: '$fontSize.sm',
+        padding: '$2',
+        fontSize: '$2',
       },
       md: {
-        height: '$size.md',
-        paddingHorizontal: '$space.md',
-        fontSize: '$fontSize.base',
+        padding: '$3',
+        fontSize: '$3',
       },
       lg: {
-        height: '$size.lg',
-        paddingHorizontal: '$space.lg',
-        fontSize: '$fontSize.lg',
+        padding: '$4',
+        fontSize: '$4',
       },
     },
   } as const,
+
+  defaultVariants: {
+    variant: 'primary',
+    size: 'md',
+  },
 })
 
 export type ButtonProps = GetProps<typeof CustomButton> & {
@@ -66,8 +63,8 @@ export type ButtonProps = GetProps<typeof CustomButton> & {
 }
 
 export function Button({ 
-  variant = 'primary',
-  size = 'md',
+  variant,
+  size,
   isLoading,
   leftIcon,
   rightIcon,
@@ -82,12 +79,12 @@ export function Button({
       disabled={disabled || isLoading}
       {...props}
     >
-      <Stack direction="horizontal" spacing="$space.sm" alignItems="center">
+      <YStack flexDirection="row" gap="$2" alignItems="center">
         {isLoading && <Spinner size="sm" />}
         {!isLoading && leftIcon}
         {children}
         {!isLoading && rightIcon}
-      </Stack>
+      </YStack>
     </CustomButton>
   )
 }

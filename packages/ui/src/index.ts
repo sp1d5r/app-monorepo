@@ -1,3 +1,6 @@
 export * from './Button'
 export * from './Spinner'
+export * from './Text'
+export * from './Heading'
+export * from './Label'
 export { default as config } from '../tamagui.config'
