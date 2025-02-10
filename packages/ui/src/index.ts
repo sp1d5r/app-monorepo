@@ -1,5 +1,5 @@
-export * from './Button'
-export * from './Spinner'
+export { Button } from './Button'
+export { Spinner } from './Spinner'
 export { Text } from './Text'
 export { Heading } from './Heading'
 export { Label } from './Label'
