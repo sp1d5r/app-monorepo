@@ -14,11 +14,11 @@ export const Text = styled(TamaguiText, {
       '2xl': { fontSize: '$7' },
     },
     weight: {
-      light: { fontWeight: '$3' },
-      regular: { fontWeight: '$4' },
-      medium: { fontWeight: '$5' },
-      semibold: { fontWeight: '$6' },
-      bold: { fontWeight: '$7' },
+      light: { fontWeight: '300' },
+      regular: { fontWeight: '400' },
+      medium: { fontWeight: '500' },
+      semibold: { fontWeight: '600' },
+      bold: { fontWeight: '700' },
     },
     align: {
       left: { textAlign: 'left' },
@@ -26,20 +26,20 @@ export const Text = styled(TamaguiText, {
       right: { textAlign: 'right' },
     },
     color: {
-      primary: { color: '$primary' },
-      secondary: { color: '$secondary' },
-      success: { color: '$success' },
-      error: { color: '$error' },
-      warning: { color: '$warning' },
-      info: { color: '$info' },
-      muted: { color: '$gray500' },
+      primary: { color: '$color$primary' },
+      secondary: { color: '$color$secondary' },
+      success: { color: '$color$success' },
+      error: { color: '$color$error' },
+      warning: { color: '$color$warning' },
+      info: { color: '$color$info' },
+      muted: { color: '$color$gray500' },
     },
   } as const,
 
   defaultVariants: {
     size: 'base',
     weight: 'regular',
-  },
+  } as const,
 })
 
 export type TextProps = GetProps<typeof Text> 

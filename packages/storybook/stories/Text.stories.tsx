@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Text } from '@app-monorepo/ui/src/Text';
-import { Heading } from '@app-monorepo/ui/src/Heading';
-import { Label } from '@app-monorepo/ui/src/Label';
+import { Text } from '@app-monorepo/ui';
+import { Heading } from '@app-monorepo/ui';
+import { Label } from '@app-monorepo/ui';
 import { Stack } from 'tamagui'
 
 const meta = {

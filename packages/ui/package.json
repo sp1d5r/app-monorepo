@@ -19,14 +19,17 @@
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
-    "@tamagui/config": "^1.124.4",
-    "@tamagui/core": "^1.x",
-    "@tamagui/font-inter": "^1.x",
-    "@tamagui/shorthands": "^1.x",
-    "@tamagui/themes": "^1.124.4",
+    "@tamagui/animations-moti": "1.74.21",
+    "@tamagui/config": "1.74.21",
+    "@tamagui/core": "1.74.21",
+    "@tamagui/font-inter": "1.74.21",
+    "@tamagui/shorthands": "1.74.21",
+    "@tamagui/themes": "1.74.21",
+    "@tamagui/web": "1.74.21",
+    "moti": "^0.27.0",
     "react": "18.2.0",
     "react-native": "0.72.17",
-    "tamagui": "^1.x"
+    "tamagui": "1.74.21"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.25.9",

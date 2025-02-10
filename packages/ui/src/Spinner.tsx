@@ -26,12 +26,7 @@ const SpinnerCircle = styled(YStack, {
   borderRadius: 1000,
   width: '100%',
   height: '100%',
-
-  animation: 'spin',
-
-  animationDuration: '750ms',
-  animationIterationCount: 'infinite',
-  animationTimingFunction: 'linear',
+  animation: 'spin 750ms linear infinite',
 })
 
 export type SpinnerProps = GetProps<typeof SpinnerFrame>

@@ -4,7 +4,7 @@ import { Text } from './Text'
 const StyledLabel = styled(Text, {
   name: 'Label',
   size: 'sm',
-  fontWeight: '$5',
+  fontWeight: '500',
 
   variants: {
     disabled: {
