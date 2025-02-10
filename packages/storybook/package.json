@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "storybook dev -p 6006",
-    "build": "storybook build",
+    "dev": "pnpm build:deps && storybook dev -p 6006",
+    "build": "pnpm build:deps && storybook build",
     "build:deps": "pnpm --filter @app-monorepo/ui build",
     "clean": "rm -rf dist node_modules"
   },

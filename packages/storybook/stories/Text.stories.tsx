@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Text } from '@app-monorepo/ui';
-import { Heading } from '@app-monorepo/ui';
-import { Label } from '@app-monorepo/ui';
+import { Text, Label, Heading } from '@app-monorepo/ui';
 import { Stack } from 'tamagui'
 
 const meta = {
@@ -32,13 +30,11 @@ export const TextSizes: Story = {
 export const TextWeights: Story = {
   render: () => (
     <Stack space="$md">
-      <Text weight="thin">Thin Text</Text>
       <Text weight="light">Light Text</Text>
       <Text weight="regular">Regular Text</Text>
       <Text weight="medium">Medium Text</Text>
       <Text weight="semibold">Semibold Text</Text>
       <Text weight="bold">Bold Text</Text>
-      <Text weight="black">Black Text</Text>
     </Stack>
   ),
 }
