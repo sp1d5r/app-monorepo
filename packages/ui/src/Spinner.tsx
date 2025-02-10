@@ -1,62 +1,45 @@
 import React from 'react'
-import { styled, Stack, GetProps, createAnimations } from 'tamagui'
+import { styled, YStack, GetProps } from 'tamagui'
 
-const SpinnerContainer = styled(Stack, {
+const SpinnerFrame = styled(YStack, {
   name: 'Spinner',
   alignItems: 'center',
   justifyContent: 'center',
-
+  
   variants: {
     size: {
-      sm: {
-        width: '$size.sm',
-        height: '$size.sm',
-      },
-      md: {
-        width: '$size.md',
-        height: '$size.md',
-      },
-      lg: {
-        width: '$size.lg',
-        height: '$size.lg',
-      },
+      sm: { width: '$3', height: '$3' },
+      md: { width: '$4', height: '$4' },
+      lg: { width: '$5', height: '$5' },
     },
   } as const,
-})
 
-const animations = createAnimations({
-  spin: {
-    '0%': {
-      transform: 'rotate(0deg)',
-    },
-    '100%': {
-      transform: 'rotate(360deg)',
-    },
+  defaultVariants: {
+    size: 'md',
   },
 })
 
-const SpinnerCircle = styled(Stack, {
+const SpinnerCircle = styled(YStack, {
   borderWidth: 2,
-  borderColor: '$gray300',
-  borderTopColor: '$primary',
-  borderRadius: '$full',
+  borderColor: '$color.background',
+  borderTopColor: '$color.primary',
+  borderRadius: 1000,
   width: '100%',
   height: '100%',
-  animation: {
-    name: 'spin',
-    duration: 750,
-    timing: 'linear',
-    iteration: 'infinite'
-  },
-  {...animations},
+
+  animation: 'spin',
+
+  animationDuration: '750ms',
+  animationIterationCount: 'infinite',
+  animationTimingFunction: 'linear',
 })
 
-export type SpinnerProps = GetProps<typeof SpinnerContainer>
+export type SpinnerProps = GetProps<typeof SpinnerFrame>
 
-export function Spinner({ size = 'md', ...props }: SpinnerProps) {
+export function Spinner(props: SpinnerProps) {
   return (
-    <SpinnerContainer size={size} {...props}>
+    <SpinnerFrame {...props}>
       <SpinnerCircle />
-    </SpinnerContainer>
+    </SpinnerFrame>
   )
 } 

@@ -20,9 +20,13 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "turbo": "^2.4.0"
+    "turbo": "^2.4.0",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@tamagui/lucide-icons": "^1.124.4"
+  },
+  "resolutions": {
+    "typescript": "^5.3.3"
   }
 }

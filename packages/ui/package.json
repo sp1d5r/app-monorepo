@@ -19,10 +19,11 @@
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
+    "@tamagui/config": "^1.124.4",
     "@tamagui/core": "^1.x",
     "@tamagui/font-inter": "^1.x",
     "@tamagui/shorthands": "^1.x",
-    "@tamagui/themes": "^1.x",
+    "@tamagui/themes": "^1.124.4",
     "react": "18.2.0",
     "react-native": "0.72.17",
     "tamagui": "^1.x"

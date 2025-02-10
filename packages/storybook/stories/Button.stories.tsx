@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@app-monorepo/ui/src/Button';
 import { Mail } from '@tamagui/lucide-icons';
