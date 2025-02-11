@@ -1,90 +1,152 @@
-import React from 'react'
-import { styled, Button as TamaguiButton, GetProps, YStack } from 'tamagui'
-import { Spinner } from './Spinner' // You'll need to create this
+import React, { useContext } from 'react'
+import { styled, Button as TamaguiButton, GetProps, YStack, Text, useTheme } from 'tamagui'
+import { Spinner } from './Spinner'
+import { cloneElement, isValidElement } from 'react'
+import { SizeTokens, withStaticProperties } from '@tamagui/core'
+import { createStyledContext } from 'tamagui'
 
-// Customize TamaguiButton
-const CustomButton = styled(TamaguiButton, {
+// Create context for sharing props between components
+export const ButtonContext = createStyledContext({
+  size: '$md' as SizeTokens,
+})
+
+// Base button frame
+const ButtonFrame = styled(YStack, {
   name: 'Button',
-  backgroundColor: '$background',
+  context: ButtonContext,
   borderRadius: '$4',
-  paddingVertical: '$2',
-  paddingHorizontal: '$3',
+  backgroundColor: '$background',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+
+  pressStyle: {
+    opacity: 0.8,
+  },
+
+  hoverStyle: {
+    backgroundColor: '$backgroundHover',
+  },
 
   variants: {
-    variant: {
-      primary: {
-        backgroundColor: '$blue10',
-        color: 'white',
-      },
-      secondary: {
-        backgroundColor: '$yellow10',
-        color: '$color',
-      },
-      outline: {
-        backgroundColor: 'transparent',
-        borderWidth: 1,
-        borderColor: '$blue10',
-        color: '$blue10',
-      },
-      ghost: {
-        backgroundColor: 'transparent',
-        color: '$blue10',
-        hoverStyle: {
-          backgroundColor: '$blue2',
-        },
-      },
-    },
     size: {
       sm: {
         padding: '$2',
-        fontSize: '$2',
+        gap: '$2',
       },
       md: {
         padding: '$3',
-        fontSize: '$3',
+        gap: '$2',
       },
       lg: {
         padding: '$4',
-        fontSize: '$4',
+        gap: '$2',
+        minHeight: 60,
+      },
+    },
+
+    variant: {
+      solid: {
+        backgroundColor: '$blue10',
+        color: 'white',
+      },
+      outlined: {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '$color',
+        color: '$color',
+      },
+      ghost: {
+        backgroundColor: 'transparent',
+        color: '$color',
+      },
+    },
+
+    chromeless: {
+      true: {
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+        padding: 0,
+        pressStyle: {
+          opacity: 0.7,
+        },
       },
     },
   } as const,
 
   defaultVariants: {
-    variant: 'primary',
+    variant: 'solid',
     size: 'md',
   },
 })
 
-export type ButtonProps = GetProps<typeof CustomButton> & {
-  isLoading?: boolean
-  leftIcon?: React.ReactNode
-  rightIcon?: React.ReactNode
+// Button text component
+const ButtonText = styled(Text, {
+  name: 'ButtonText',
+  context: ButtonContext,
+  color: 'inherit',
+  userSelect: 'none',
+
+  variants: {
+    size: {
+      sm: { fontSize: '$2' },
+      md: { fontSize: '$3' },
+      lg: { fontSize: '$4' },
+    },
+  } as const,
+})
+
+// Button icon component
+type ButtonIconProps = {
+  children: React.ReactNode
 }
 
-export function Button({ 
-  variant,
-  size,
+const ButtonIcon = (props: ButtonIconProps) => {
+  const { size } = useContext(ButtonContext.context)
+  const theme = useTheme()
+  const iconSize = size === '$sm' ? 16 : size === '$md' ? 18 : 20
+
+  return isValidElement(props.children)
+    ? cloneElement(props.children, {
+        // @ts-expect-error - we know these props exist on icon components
+        size: iconSize,
+        // @ts-expect-error - we know these props exist on icon components
+        color: theme.color.get(),
+      })
+    : null
+}
+
+// Export both the compound component and the wrapper
+export const ButtonComponent = withStaticProperties(ButtonFrame, {
+  Text: ButtonText,
+  Icon: ButtonIcon,
+  Props: ButtonContext.Provider,
+})
+
+// Wrapper component that provides the simpler API
+export const Button = ButtonWrapper
+
+// Types
+export type ButtonProps = GetProps<typeof ButtonFrame> & {
+  isLoading?: boolean
+  icon?: React.ReactNode
+  iconAfter?: React.ReactNode
+}
+
+// Update the ButtonWrapper to use ButtonComponent
+function ButtonWrapper({ 
   isLoading,
-  leftIcon,
-  rightIcon,
+  icon,
+  iconAfter,
   children,
-  disabled,
   ...props 
 }: ButtonProps) {
   return (
-    <CustomButton 
-      variant={variant}
-      size={size}
-      disabled={disabled || isLoading}
-      {...props}
-    >
-      <YStack flexDirection="row" gap="$2" alignItems="center">
-        {isLoading && <Spinner size="sm" />}
-        {!isLoading && leftIcon}
-        {children}
-        {!isLoading && rightIcon}
-      </YStack>
-    </CustomButton>
+    <ButtonComponent {...props}>
+      {isLoading && <ButtonComponent.Icon><Spinner size="sm" /></ButtonComponent.Icon>}
+      {!isLoading && icon && <ButtonComponent.Icon>{icon}</ButtonComponent.Icon>}
+      {children && <ButtonComponent.Text>{children}</ButtonComponent.Text>}
+      {!isLoading && iconAfter && <ButtonComponent.Icon>{iconAfter}</ButtonComponent.Icon>}
+    </ButtonComponent>
   )
 }
