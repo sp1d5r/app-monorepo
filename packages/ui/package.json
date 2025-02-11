@@ -25,14 +25,15 @@
     "@tamagui/font-inter": "^1.x",
     "@tamagui/shorthands": "^1.x",
     "@tamagui/themes": "^1.124.4",
+    "moti": "^0.27.0",
     "react": "18.2.0",
     "react-native": "0.72.17",
-    "tamagui": "^1.x",
-    "moti": "^0.27.0"
+    "tamagui": "^1.x"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.25.9",
     "@storybook/react": "7.6.17",
+    "@types/node": "^18.0.0",
     "@types/react": "^18.2.0",
     "@types/react-native": "^0.72.0",
     "typescript": "^4.x"
