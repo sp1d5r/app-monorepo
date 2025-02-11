@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@app-monorepo/ui';
-import { Mail } from '@tamagui/lucide-icons';
+import { Activity, Airplay } from '@tamagui/lucide-icons';
+import { YStack, XStack, XGroup } from 'tamagui';
 
 const meta = {
   title: 'UI/Button',
@@ -9,116 +10,69 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'outline', 'ghost'],
-    },
-    size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
-    },
-    isLoading: {
-      control: 'boolean',
-    },
-    disabled: {
-      control: 'boolean',
-    },
-  },
 } satisfies Meta<typeof Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
-  args: {
-    variant: 'primary',
-    children: 'Button',
-  },
+export const ButtonVariants: Story = {
+  render: () => (
+    <YStack space="$md">
+      <Button>Default Button</Button>
+      <Button variant="outlined">Outlined Button</Button>
+      <Button variant="ghost">Ghost Button</Button>
+    </YStack>
+  ),
 };
 
-export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    children: 'Button',
-  },
+export const ButtonSizes: Story = {
+  render: () => (
+    <YStack space="$md" alignItems="flex-start">
+      <Button size="sm">Small Button</Button>
+      <Button size="md">Medium Button</Button>
+      <Button size="lg">Large Button</Button>
+    </YStack>
+  ),
 };
 
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: 'Button',
-  },
+export const ButtonsWithIcons: Story = {
+  render: () => (
+    <YStack space="$md">
+      <Button icon={<Airplay />}>Icon Before</Button>
+      <Button iconAfter={<Activity />}>Icon After</Button>
+      <Button icon={<Airplay />} iconAfter={<Activity />}>Both Icons</Button>
+    </YStack>
+  ),
 };
 
-export const Ghost: Story = {
-  args: {
-    variant: 'ghost',
-    children: 'Button',
-  },
+export const ButtonStates: Story = {
+  render: () => (
+    <YStack space="$md">
+      <XStack gap="$2">
+        <Button disabled>Disabled</Button>
+        <Button chromeless>Chromeless</Button>
+      </XStack>
+
+      <XStack gap="$2">
+        <Button themeInverse>Theme Inverse</Button>
+        <Button isLoading>Loading</Button>
+      </XStack>
+    </YStack>
+  ),
 };
 
-export const Small: Story = {
-  args: {
-    size: 'sm',
-    children: 'Small Button',
-  },
-};
-
-export const Medium: Story = {
-  args: {
-    size: 'md',
-    children: 'Medium Button',
-  },
-};
-
-export const Large: Story = {
-  args: {
-    size: 'lg',
-    children: 'Large Button',
-  },
-};
-
-export const Loading: Story = {
-  args: {
-    isLoading: true,
-    children: 'Loading',
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    children: 'Disabled',
-  },
-};
-
-export const WithLeftIcon: Story = {
-  args: {
-    leftIcon: <Mail size={18} />,
-    children: 'Send Email',
-  },
-};
-
-export const WithRightIcon: Story = {
-  args: {
-    rightIcon: <Mail size={18} />,
-    children: 'Send Email',
-  },
-};
-
-export const WithBothIcons: Story = {
-  args: {
-    leftIcon: <Mail size={18} />,
-    rightIcon: <Mail size={18} />,
-    children: 'Send Email',
-  },
-};
-
-export const LoadingWithIcon: Story = {
-  args: {
-    isLoading: true,
-    leftIcon: <Mail size={18} />,
-    children: 'Sending...',
-  },
+export const ButtonGroups: Story = {
+  render: () => (
+    <XGroup>
+      <XGroup.Item>
+        <Button>Group 1</Button>
+      </XGroup.Item>
+      <XGroup.Item>
+        <Button>Group 2</Button>
+      </XGroup.Item>
+      <XGroup.Item>
+        <Button>Group 3</Button>
+      </XGroup.Item>
+    </XGroup>
+  ),
 }; 

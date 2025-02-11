@@ -1,4 +1,4 @@
-export { Button } from './Button'
+export { Button, ButtonComponent } from './Button'
 export { Spinner } from './Spinner'
 export { Text } from './Text'
 export { Heading } from './Heading'

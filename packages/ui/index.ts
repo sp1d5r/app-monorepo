@@ -1,4 +1,4 @@
-export { Button } from './src/Button'
+export { Button, ButtonComponent } from './src/Button'
 export { Spinner } from './src/Spinner'
 export { Text } from './src/Text'
 export { Heading } from './src/Heading'
