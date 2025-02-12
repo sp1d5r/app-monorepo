@@ -1,10 +1,17 @@
-import { createTamagui } from 'tamagui'
 import { createInterFont } from '@tamagui/font-inter'
 import { shorthands } from '@tamagui/shorthands'
 import { createAnimations } from '@tamagui/animations-moti'
-import { createTokens } from '@tamagui/core'
+import { color, radius, size, space, themes, zIndex } from '@tamagui/themes'
+import { createTamagui, createTokens } from 'tamagui'
 import { defaultConfig } from '@tamagui/config/v4'
-import { themes } from './theme'
+
+const tokens = createTokens({
+  size,
+  space,
+  zIndex,
+  color,
+  radius,
+})
 
 const animations = createAnimations({
   fast: {
@@ -27,10 +34,10 @@ const animations = createAnimations({
 })
 
 export default createTamagui({
-  //@ts-ignore
-  themes,
   ...defaultConfig,
   animations,
+  tokens,
+  themes, // add your custom themes AFTER spreading defaultConfig
   defaultTheme: 'light',
   shouldAddPrefersColorThemes: true,
   themeClassNameOnRoot: true,
@@ -40,3 +47,4 @@ export default createTamagui({
     body: createInterFont(),
   }
 })
+

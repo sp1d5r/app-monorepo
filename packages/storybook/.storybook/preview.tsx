@@ -1,5 +1,5 @@
 import React from 'react'
-import { TamaguiProvider } from 'tamagui'
+import { TamaguiProvider, Theme } from 'tamagui'
 import config from '../../ui/tamagui.config'
 import type { Preview, StoryFn } from '@storybook/react'
 
@@ -8,7 +8,9 @@ const preview: Preview = {
     (Story: StoryFn) => {
       return (
         <TamaguiProvider config={config}>
-          <Story />
+          <Theme name="red">
+            <Story />
+          </Theme>
         </TamaguiProvider>
       )
     },
