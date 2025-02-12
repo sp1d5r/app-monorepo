@@ -19,6 +19,7 @@ const ButtonFrame = styled(YStack, {
   justifyContent: 'center',
   backgroundColor: '$background',
   padding: '$3',
+  space: '$2',
 
   pressStyle: {
     opacity: 0.8,
@@ -64,7 +65,6 @@ const ButtonFrame = styled(YStack, {
       true: {
         backgroundColor: 'transparent',
         borderWidth: 0,
-        padding: 0,
         pressStyle: {
           opacity: 0.7,
         },
