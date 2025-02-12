@@ -8,7 +8,7 @@ const preview: Preview = {
     (Story: StoryFn) => {
       return (
         <TamaguiProvider config={config}>
-          <Theme name="red">
+          <Theme name="green">
             <Story />
           </Theme>
         </TamaguiProvider>
