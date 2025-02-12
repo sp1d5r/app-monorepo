@@ -15,10 +15,11 @@ const ButtonFrame = styled(YStack, {
   name: 'Button',
   context: ButtonContext,
   borderRadius: '$4',
-  backgroundColor: '$background',
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
+  backgroundColor: '$background',
+  padding: '$3',
 
   pressStyle: {
     opacity: 0.8,
@@ -47,8 +48,6 @@ const ButtonFrame = styled(YStack, {
 
     variant: {
       solid: {
-        backgroundColor: '$blue10',
-        color: 'white',
       },
       outlined: {
         backgroundColor: 'transparent',
@@ -72,6 +71,7 @@ const ButtonFrame = styled(YStack, {
         },
       },
     },
+
   } as const,
 
   defaultVariants: {
