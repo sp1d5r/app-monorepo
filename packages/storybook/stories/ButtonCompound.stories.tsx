@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>
 
 export const BasicUsage: Story = {
   render: () => (
-    <YStack space="$md">
+    <YStack gap="$2">
       <ButtonComponent>
         <ButtonComponent.Text>Basic Button</ButtonComponent.Text>
       </ButtonComponent>
@@ -32,7 +32,7 @@ export const BasicUsage: Story = {
 
 export const ComplexLayouts: Story = {
   render: () => (
-    <YStack space="$md" alignItems="flex-start">
+    <YStack gap="$2">
       <ButtonComponent size="lg">
         <ButtonComponent.Icon><Plus /></ButtonComponent.Icon>
         <YStack>
@@ -54,7 +54,7 @@ export const ComplexLayouts: Story = {
 
 export const MultipleIcons: Story = {
   render: () => (
-    <YStack space="$md">
+    <YStack gap="$2">
       <ButtonComponent>
         <ButtonComponent.Icon><Mail /></ButtonComponent.Icon>
         <ButtonComponent.Text>Inbox</ButtonComponent.Text>
@@ -72,9 +72,9 @@ export const MultipleIcons: Story = {
 
 export const CustomStyling: Story = {
   render: () => (
-    <YStack space="$md">
+    <YStack gap="$2">
       <ButtonComponent 
-        backgroundColor="$blue8" 
+        backgroundColor="$primary" 
         pressStyle={{ backgroundColor: '$blue10' }}
       >
         <ButtonComponent.Icon><Mail /></ButtonComponent.Icon>
@@ -120,7 +120,7 @@ export const GroupedButtons: Story = {
 
 export const SizeVariants: Story = {
   render: () => (
-    <YStack space="$md">
+    <YStack gap="$2">
       <ButtonComponent size="sm">
         <ButtonComponent.Icon><Mail /></ButtonComponent.Icon>
         <ButtonComponent.Text>Small</ButtonComponent.Text>

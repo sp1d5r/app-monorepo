@@ -1,5 +1,4 @@
 export { Button, ButtonComponent } from './src/Button'
-export { Spinner } from './src/Spinner'
 export { Text } from './src/Text'
 export { Heading } from './src/Heading'
 export { Label } from './src/Label'

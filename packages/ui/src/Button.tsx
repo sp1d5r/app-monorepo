@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
-import { styled, Button as TamaguiButton, GetProps, YStack, Text, useTheme } from 'tamagui'
-import { Spinner } from './Spinner'
+import { styled, Button as TamaguiButton, GetProps, YStack, Text, useTheme, Spinner } from 'tamagui'
 import { cloneElement, isValidElement } from 'react'
 import { SizeTokens, withStaticProperties } from '@tamagui/core'
 import { createStyledContext } from 'tamagui'
@@ -143,7 +142,7 @@ function ButtonWrapper({
 }: ButtonProps) {
   return (
     <ButtonComponent {...props}>
-      {isLoading && <ButtonComponent.Icon><Spinner size="sm" /></ButtonComponent.Icon>}
+      {isLoading && <ButtonComponent.Icon><Spinner size="small" /></ButtonComponent.Icon>}
       {!isLoading && icon && <ButtonComponent.Icon>{icon}</ButtonComponent.Icon>}
       {children && <ButtonComponent.Text>{children}</ButtonComponent.Text>}
       {!isLoading && iconAfter && <ButtonComponent.Icon>{iconAfter}</ButtonComponent.Icon>}
