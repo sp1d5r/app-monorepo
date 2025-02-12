@@ -4,7 +4,7 @@ import { Activity, Airplay } from '@tamagui/lucide-icons';
 import { YStack, XStack, XGroup } from 'tamagui';
 
 const meta = {
-  title: 'UI/Button',
+  title: 'Atoms/Button',
   component: Button,
   parameters: {
     layout: 'centered',

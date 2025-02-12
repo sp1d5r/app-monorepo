@@ -4,7 +4,7 @@ import { Activity, Airplay, ChevronRight, Mail, Plus } from '@tamagui/lucide-ico
 import { YStack, XStack, XGroup } from 'tamagui'
 
 const meta = {
-  title: 'UI/ButtonCompound',
+  title: 'Atoms/ButtonCompound',
   component: ButtonComponent,
   parameters: {
     layout: 'centered',
