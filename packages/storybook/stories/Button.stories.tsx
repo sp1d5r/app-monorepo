@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 export const ButtonVariants: Story = {
   render: () => (
-    <YStack space="$md">
+    <YStack gap="$2">
       <Button>Default Button</Button>
       <Button variant="outlined">Outlined Button</Button>
       <Button variant="ghost">Ghost Button</Button>
@@ -27,7 +27,7 @@ export const ButtonVariants: Story = {
 
 export const ButtonSizes: Story = {
   render: () => (
-    <YStack space="$md" alignItems="flex-start">
+    <YStack gap="$2">
       <Button size="sm">Small Button</Button>
       <Button size="md">Medium Button</Button>
       <Button size="lg">Large Button</Button>
@@ -37,7 +37,7 @@ export const ButtonSizes: Story = {
 
 export const ButtonsWithIcons: Story = {
   render: () => (
-    <YStack space="$md">
+    <YStack gap="$2">
       <Button icon={<Airplay />}>Icon Before</Button>
       <Button iconAfter={<Activity />}>Icon After</Button>
       <Button icon={<Airplay />} iconAfter={<Activity />}>Both Icons</Button>
@@ -47,7 +47,7 @@ export const ButtonsWithIcons: Story = {
 
 export const ButtonStates: Story = {
   render: () => (
-    <YStack space="$md">
+    <YStack gap="$2">
       <XStack gap="$2">
         <Button disabled>Disabled</Button>
         <Button chromeless>Chromeless</Button>
