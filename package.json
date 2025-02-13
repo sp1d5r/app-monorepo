@@ -13,7 +13,11 @@
     "storybook": "pnpm --filter @app-monorepo/storybook dev",
     "clean": "turbo run clean && rm -rf node_modules",
     "clean:workspaces": "turbo run clean",
-    "install:clean": "pnpm clean && pnpm install"
+    "install:clean": "pnpm clean && pnpm install",
+    "expo": "pnpm --filter expo-app start",
+    "expo:android": "pnpm --filter expo-app android",
+    "expo:ios": "pnpm --filter expo-app ios",
+    "expo:web": "pnpm --filter expo-app web"
   },
   "keywords": [],
   "author": "",
@@ -21,12 +25,20 @@
   "description": "",
   "devDependencies": {
     "turbo": "^2.4.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "@tamagui/babel-plugin": "^1.x",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4"
   },
   "dependencies": {
     "@tamagui/lucide-icons": "^1.124.6"
   },
   "resolutions": {
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.7",
+    "react-native-web": "~0.19.13",
+    "@types/react": "~18.2.45",
+    "@types/react-dom": "~18.2.17"
   }
 }
