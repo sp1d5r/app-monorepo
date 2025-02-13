@@ -97,19 +97,19 @@ const ButtonText = styled(Text, {
 
 // Button icon component
 type ButtonIconProps = {
-  children: React.ReactNode
-}
+  children?: React.ReactNode;
+  size?: number;
+  color?: string;
+};
 
-const ButtonIcon = (props: ButtonIconProps) => {
+const ButtonIcon = ({ children, ...props }: ButtonIconProps) => {
   const { size } = useContext(ButtonContext.context)
   const theme = useTheme()
   const iconSize = size === '$sm' ? 16 : size === '$md' ? 18 : 20
 
-  return isValidElement(props.children)
-    ? cloneElement(props.children, {
-        // @ts-expect-error - we know these props exist on icon components
+  return isValidElement(children)
+    ? cloneElement(children, {
         size: iconSize,
-        // @ts-expect-error - we know these props exist on icon components
         color: theme.color.get(),
       })
     : null

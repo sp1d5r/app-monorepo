@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-      "target": "es5",
+      "target": "es6",
       "lib": ["dom", "dom.iterable", "esnext"],
-      "jsx": "react-jsx",
-      "module": "esnext",
-      "moduleResolution": "bundler",
+      "jsx": "react-native",
+      "module": "commonjs",
+      "moduleResolution": "node",
       "baseUrl": ".",
       "strict": true,
       "esModuleInterop": true,
@@ -15,9 +15,10 @@
       "composite": true,
       "types": ["react", "react-native"],
       "resolveJsonModule": true,
-      "isolatedModules": true
+      "isolatedModules": true,
+      "rootDir": "src"
     },
-    "include": ["src", "tamagui.config.ts", "theme.ts", "index.ts"],
-    "exclude": ["node_modules", "**/*.stories.tsx", "**/*.test.tsx"]
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
   }
   
