@@ -96,8 +96,13 @@ const ButtonText = styled(Text, {
 })
 
 // Button icon component
+type IconComponent = React.ReactElement<{
+  size?: number;
+  color?: string;
+}>;
+
 type ButtonIconProps = {
-  children?: React.ReactNode;
+  children?: IconComponent;
   size?: number;
   color?: string;
 };
@@ -128,8 +133,8 @@ export const Button = ButtonWrapper
 // Types
 export type ButtonProps = GetProps<typeof ButtonFrame> & {
   isLoading?: boolean
-  icon?: React.ReactNode
-  iconAfter?: React.ReactNode
+  icon?: IconComponent
+  iconAfter?: IconComponent
 }
 
 // Update the ButtonWrapper to use ButtonComponent
@@ -142,10 +147,22 @@ function ButtonWrapper({
 }: ButtonProps) {
   return (
     <ButtonComponent {...props}>
-      {isLoading && <ButtonComponent.Icon><Spinner size="small" /></ButtonComponent.Icon>}
-      {!isLoading && icon && <ButtonComponent.Icon>{icon}</ButtonComponent.Icon>}
+      {isLoading && (
+        <ButtonComponent.Icon>
+          <Spinner size="small" />
+        </ButtonComponent.Icon>
+      )}
+      {!isLoading && icon && (
+        <ButtonComponent.Icon>
+          {icon}
+        </ButtonComponent.Icon>
+      )}
       {children && <ButtonComponent.Text>{children}</ButtonComponent.Text>}
-      {!isLoading && iconAfter && <ButtonComponent.Icon>{iconAfter}</ButtonComponent.Icon>}
+      {!isLoading && iconAfter && (
+        <ButtonComponent.Icon>
+          {iconAfter}
+        </ButtonComponent.Icon>
+      )}
     </ButtonComponent>
   )
 }

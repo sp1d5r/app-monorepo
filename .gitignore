@@ -1,6 +1,7 @@
 # Dependencies
 node_modules
 **/node_modules
+apps/expo-app/node_modules
 
 # Build outputs
 dist
@@ -34,3 +35,4 @@ Thumbs.db
 # Specific package outputs
 packages/ui/dist
 packages/storybook/dist
+
