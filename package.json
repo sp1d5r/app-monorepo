@@ -34,11 +34,17 @@
   },
   "resolutions": {
     "typescript": "^5.3.3",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-native": "0.76.7",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.73.6",
     "react-native-web": "~0.19.13",
-    "@types/react": "~18.2.45",
-    "@types/react-dom": "~18.2.17"
+    "@types/react": "~18.3.12",
+    "@types/react-dom": "~18.2.17",
+    "metro": "^0.81.0",
+    "metro-config": "^0.81.0",
+    "metro-resolver": "^0.81.0",
+    "expo-modules-autolinking": "~2.0.0",
+    "@expo/config-plugins": "~9.0.0",
+    "@expo/prebuild-config": "~8.0.0"
   }
 }
