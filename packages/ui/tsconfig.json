@@ -16,9 +16,9 @@
       "types": ["react", "react-native"],
       "resolveJsonModule": true,
       "isolatedModules": true,
-      "rootDir": "src"
+      "rootDir": "."
     },
-    "include": ["src"],
+    "include": ["src", "tamagui.config.ts"],
     "exclude": ["node_modules", "dist"]
   }
   
