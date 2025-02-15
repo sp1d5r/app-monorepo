@@ -94,8 +94,14 @@ config.resolver = {
   ),
 
   sourceExts: isWeb 
-    ? ['web.tsx', 'web.ts', 'web.jsx', 'web.js', 'tsx', 'ts', 'jsx', 'js']
-    : ['tsx', 'ts', 'jsx', 'js', 'json'],
+    ? ['web.tsx', 'web.ts', 'web.jsx', 'web.js', 'tsx', 'ts', 'jsx', 'js', 'json', 'd.ts']
+    : [
+        'ios.tsx', 'android.tsx',
+        'ios.ts', 'android.ts',
+        'ios.jsx', 'android.jsx',
+        'ios.js', 'android.js',
+        'tsx', 'ts', 'jsx', 'js', 'json', 'd.ts'
+      ],
 
   assetExts: [
     ...config.resolver.assetExts,
