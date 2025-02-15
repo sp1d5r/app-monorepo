@@ -36,3 +36,52 @@ Thumbs.db
 packages/ui/dist
 packages/storybook/dist
 
+
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+apps/expo-app/node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Node
+node_modules/
+*.log
+
+# Expo
+apps/expo-app/.expo/
+apps/expo-app/dist/
+apps/expo-app/web-build/
+apps/expo-app/expo-env.d.ts
+
+# Native
+apps/expo-app/*.orig.*
+apps/expo-app/*.jks
+apps/expo-app/*.p8
+apps/expo-app/*.p12
+apps/expo-app/*.key
+apps/expo-app/*.mobileprovision
+
+# Metro
+apps/expo-app/.metro-health-check*
+
+# debug
+apps/expo-app/npm-debug.*
+apps/expo-app/yarn-debug.*
+apps/expo-app/yarn-error.*
+
+# macOS
+apps/expo-app/.DS_Store
+apps/expo-app/*.pem
+
+# local env files
+apps/expo-app/.env*.local
+
+# typescript
+apps/expo-app/*.tsbuildinfo
+
+# app-example
+apps/expo-app/app-example
