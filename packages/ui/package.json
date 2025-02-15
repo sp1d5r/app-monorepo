@@ -26,20 +26,19 @@
     "@tamagui/shorthands": "^1.x",
     "@tamagui/themes": "^1.124.4",
     "moti": "^0.27.0",
-    "react": "18.2.0",
-    "react-native": "0.72.17",
+    "react": "18.3.1",
+    "react-native": "0.77.1",
     "tamagui": "^1.x"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.25.9",
     "@storybook/react": "7.6.17",
     "@types/node": "^18.0.0",
-    "@types/react": "^18.2.0",
-    "@types/react-native": "^0.72.0",
-    "typescript": "^4.x"
+    "@types/react": "18.3.12",
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "react": "18.2.0",
-    "react-native": "0.72.17"
+    "react": "18.3.1",
+    "react-native": "0.76.7"
   }
 }
