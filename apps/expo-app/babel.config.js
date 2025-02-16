@@ -11,9 +11,19 @@ module.exports = function (api) {
       ['babel-preset-expo', {
         jsxRuntime: 'automatic',
       }],
-      ['module:@react-native/babel-preset']
+      ['module:@react-native/babel-preset', {
+        useTransformReactJSXExperimental: true
+      }]
     ],
     plugins: [
+      ['@babel/plugin-transform-runtime', {
+        corejs: false,
+        helpers: true,
+        regenerator: true,
+        version: '^7.22.5',
+        absoluteRuntime: false,
+      }],
+      ['@babel/plugin-syntax-dynamic-import'],
       ['@babel/plugin-transform-flow-strip-types', { 
         all: true,
         requireDirective: false,
@@ -25,12 +35,6 @@ module.exports = function (api) {
       ['@babel/plugin-transform-private-methods', { loose: true }],
       ['@babel/plugin-transform-class-properties', { loose: true }],
       ['@babel/plugin-transform-private-property-in-object', { loose: true }],
-      ['@babel/plugin-transform-runtime', {
-        corejs: false,
-        helpers: true,
-        regenerator: true,
-        version: '^7.22.5',
-      }],
       ['module-resolver', {
         root: ['./'],
         alias: {
@@ -48,6 +52,16 @@ module.exports = function (api) {
       'react-native-reanimated/plugin',
     ],
     env: {
+      web: {
+        plugins: [
+          ['babel-plugin-react-native-web'],
+          ['@babel/plugin-transform-modules-commonjs', { 
+            strict: true,
+            allowTopLevelThis: true,
+            loose: true
+          }],
+        ],
+      },
       production: {
         plugins: ['react-native-paper/babel'],
       },

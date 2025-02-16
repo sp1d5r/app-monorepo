@@ -8,6 +8,7 @@ const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
 
 const moduleCache = new Map();
+const resolutionCache = new Map();
 
 function findModulePath(moduleName) {
   if (moduleCache.has(moduleName)) {
@@ -102,15 +103,24 @@ config.resolver = {
         if (name in target) {
           return target[name];
         }
-        // Log module resolution attempts
+        
+        // Check resolution cache first
+        if (resolutionCache.has(name)) {
+          return resolutionCache.get(name);
+        }
+
+        // Log module resolution attempts only once
         console.log(`🔍 Resolving module: ${name}`);
         try {
           const resolvedPath = findModulePath(String(name));
           console.log(`✅ Resolved ${name} to: ${resolvedPath}`);
+          resolutionCache.set(name, resolvedPath);
           return resolvedPath;
         } catch (e) {
           console.warn(`⚠️ Failed to resolve ${name}, falling back to default resolution`);
-          return path.join(process.cwd(), `node_modules/${name}`);
+          const fallbackPath = path.join(process.cwd(), `node_modules/${name}`);
+          resolutionCache.set(name, fallbackPath);
+          return fallbackPath;
         }
       },
     }
@@ -139,6 +149,20 @@ config.resolver = {
   ],
 
   resolveRequest: (context, moduleName, platform) => {
+    // Add platform-specific handling for web
+    if (platform === 'web') {
+      // Handle native-only modules that shouldn't be imported on web
+      if (moduleName.includes('codegenNativeCommands') ||
+          moduleName.includes('/fabric/') ||
+          moduleName.includes('native-only') ||
+          // Add this condition for safe-area-context native specs
+          moduleName.includes('/specs/Native')) {
+        return {
+          type: 'empty',
+        };
+      }
+    }
+
     if (moduleName.includes('createAnimatedComponent')) {
       // Try to find the compiled version first
       const compiledPath = path.resolve(workspaceRoot, 'node_modules/react-native/Libraries/Animated/createAnimatedComponent.js.flow');
