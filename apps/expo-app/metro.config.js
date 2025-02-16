@@ -58,12 +58,25 @@ config.watchFolders = [
   path.resolve(workspaceRoot, 'packages'),
 ].filter(folder => fs.existsSync(folder));
 
+// Add this helper function
+function getReactNativePath() {
+  const rnPath = path.resolve(workspaceRoot, 'node_modules/react-native');
+  if (!fs.existsSync(rnPath)) {
+    throw new Error(`React Native not found at ${rnPath}`);
+  }
+  console.log('🔍 Found React Native at:', rnPath);
+  return rnPath;
+}
+
+const reactNativePath = getReactNativePath();
+
 config.resolver = {
   ...config.resolver,
   enableSymlinks: true,
   blockList: exclusionList([
     /.*\.web\.jsx?$/,
     /^(?!.*node_modules).*\/dist\/.*/,
+    /.*\/react-native\/Libraries\/vendor\/emitter\/EventEmitter\.js$/,
   ]),
   resolverMainFields: ['browser', 'main', 'module', isWeb ? 'web' : null].filter(Boolean),
   platforms: ['web', 'ios', 'android'],
@@ -71,10 +84,15 @@ config.resolver = {
   
   extraNodeModules: new Proxy(
     {
+      // Explicitly add react-native
+      'react-native': reactNativePath,
       '@expo/metro-runtime': findModulePath('@expo/metro-runtime'),
       'expo': findModulePath('expo'),
       'expo-router': findModulePath('expo-router'),
       '@babel/runtime': findModulePath('@babel/runtime'),
+      '@react-native/babel-preset': findModulePath('@react-native/babel-preset'),
+      '@babel/plugin-transform-flow-strip-types': findModulePath('@babel/plugin-transform-flow-strip-types'),
+      '@babel/preset-flow': findModulePath('@babel/preset-flow'),
       'react': findModulePath('react'),
       'react-dom': findModulePath('react-dom'),
       '@app-monorepo/ui': path.resolve(workspaceRoot, 'packages/ui'),
@@ -84,29 +102,66 @@ config.resolver = {
         if (name in target) {
           return target[name];
         }
+        // Log module resolution attempts
+        console.log(`🔍 Resolving module: ${name}`);
         try {
-          return findModulePath(String(name));
+          const resolvedPath = findModulePath(String(name));
+          console.log(`✅ Resolved ${name} to: ${resolvedPath}`);
+          return resolvedPath;
         } catch (e) {
+          console.warn(`⚠️ Failed to resolve ${name}, falling back to default resolution`);
           return path.join(process.cwd(), `node_modules/${name}`);
         }
       },
     }
   ),
 
+  // Add this to ensure React Native modules are properly resolved
+  nodeModulesPaths: [
+    path.resolve(workspaceRoot, 'node_modules'),
+    path.resolve(projectRoot, 'node_modules'),
+  ],
+
   sourceExts: isWeb 
-    ? ['web.tsx', 'web.ts', 'web.jsx', 'web.js', 'tsx', 'ts', 'jsx', 'js', 'json', 'd.ts']
+    ? ['web.tsx', 'web.ts', 'web.jsx', 'web.js', 'tsx', 'ts', 'jsx', 'js', 'json', 'd.ts', 'cjs', 'mjs']
     : [
         'ios.tsx', 'android.tsx',
         'ios.ts', 'android.ts',
         'ios.jsx', 'android.jsx',
         'ios.js', 'android.js',
-        'tsx', 'ts', 'jsx', 'js', 'json', 'd.ts'
+        'tsx', 'ts', 'jsx', 'js', 'json', 'd.ts',
+        'cjs', 'mjs'
       ],
 
   assetExts: [
     ...config.resolver.assetExts,
     'db', 'sqlite', 'png', 'jpg', 'gif', 'ttf', 'otf', 'svg',
   ],
+
+  resolveRequest: (context, moduleName, platform) => {
+    if (moduleName.includes('createAnimatedComponent')) {
+      // Try to find the compiled version first
+      const compiledPath = path.resolve(workspaceRoot, 'node_modules/react-native/Libraries/Animated/createAnimatedComponent.js.flow');
+      if (fs.existsSync(compiledPath)) {
+        return {
+          filePath: compiledPath,
+          type: 'sourceFile',
+        };
+      }
+    }
+
+    if (moduleName.includes('EventEmitter')) {
+      const customPath = path.resolve(projectRoot, 'src/utils/EventEmitter.js');
+      if (fs.existsSync(customPath)) {
+        return {
+          filePath: customPath,
+          type: 'sourceFile',
+        };
+      }
+    }
+    
+    return context.resolveRequest(context, moduleName, platform);
+  },
 };
 
 config.transformer = {
@@ -119,6 +174,15 @@ config.transformer = {
     transform: {
       experimentalImportSupport: false,
       inlineRequires: true,
+      throwIfNamespace: false,
+      enableBabelRuntime: true,
+      enableBabelRCLookup: true,
+    },
+    resolver: {
+      sourceExts: ['js', 'jsx', 'ts', 'tsx', 'json', 'cjs', 'mjs'],
+      assetExts: ['png', 'jpg', 'jpeg', 'gif', 'webp'],
+      platforms: ['ios', 'android', 'web'],
+      providesModuleNodeModules: ['react-native'],
     },
   }),
 };
