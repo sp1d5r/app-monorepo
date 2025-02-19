@@ -1,6 +1,8 @@
 module.exports = function (api) {
   api.cache(true);
   
+  const isNode = process.env.BABEL_ENV === 'node';
+  
   console.log('Babel environment:', process.env.BABEL_ENV);
   console.log('Node environment:', process.env.NODE_ENV);
   console.log('Platform:', process.env.TAMAGUI_TARGET);
@@ -12,7 +14,8 @@ module.exports = function (api) {
         jsxRuntime: 'automatic',
       }],
       ['module:@react-native/babel-preset', {
-        useTransformReactJSXExperimental: true
+        useTransformReactJSXExperimental: true,
+        unstable_transformProfile: isNode ? 'hermes-stable' : undefined,
       }]
     ],
     plugins: [
@@ -45,6 +48,8 @@ module.exports = function (api) {
           'react/jsx-dev-runtime': '../../node_modules/react/jsx-dev-runtime',
           'react-native': '../../node_modules/react-native',
           '@react-native/babel-preset': '../../node_modules/@react-native/babel-preset',
+          '@babel/runtime': '../../node_modules/@babel/runtime',
+          '@babel/runtime-corejs3': '../../node_modules/@babel/runtime-corejs3',
         },
         extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json', '.d.ts'],
       }],
@@ -52,6 +57,15 @@ module.exports = function (api) {
       'react-native-reanimated/plugin',
     ],
     env: {
+      node: {
+        plugins: [
+          ['@babel/plugin-transform-modules-commonjs', { 
+            strict: true,
+            allowTopLevelThis: true,
+            loose: true
+          }],
+        ],
+      },
       web: {
         plugins: [
           ['babel-plugin-react-native-web'],
