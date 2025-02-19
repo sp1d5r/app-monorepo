@@ -163,17 +163,9 @@ config.resolver = {
       }
     }
 
-    // Handle SSR/node environment modules
-    if (moduleName.includes('expo-router/node/render')) {
-      const cleanPath = path.resolve(workspaceRoot, 'node_modules/expo-router/node/render.js');
-      return {
-        filePath: cleanPath,
-        type: 'sourceFile',
-      };
-    }
-
-    // Handle web/node platform cases
-    if (platform === 'web' || process.env.BABEL_ENV === 'node') {
+    // Handle web platform cases
+    if (platform === 'web') {
+      // Handle native-only modules
       if (
         moduleName.includes('codegenNativeCommands') ||
         moduleName.includes('/fabric/') ||
@@ -181,10 +173,13 @@ config.resolver = {
         moduleName.includes('/specs/Native') ||
         moduleName.includes('setUpDOM') ||
         moduleName.includes('InitializeCore') ||
-        // Add these to handle more node-specific modules
+        // Add react-native-screens specific modules
+        moduleName.includes('react-native-screens/lib/commonjs/fabric') ||
+        moduleName.includes('react-native/Libraries/Utilities/codegenNativeCommands') ||
         moduleName.includes('@expo/metro-runtime/src/setupHMR') ||
         moduleName.includes('@expo/metro-runtime/src/effects')
       ) {
+        console.log('📱 Providing empty module for native-only import:', moduleName);
         return {
           type: 'empty',
         };
