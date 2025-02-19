@@ -91,6 +91,7 @@ config.resolver = {
       'expo': findModulePath('expo'),
       'expo-router': findModulePath('expo-router'),
       '@babel/runtime': findModulePath('@babel/runtime'),
+      '@babel/runtime-corejs3': findModulePath('@babel/runtime-corejs3'),
       '@react-native/babel-preset': findModulePath('@react-native/babel-preset'),
       '@babel/plugin-transform-flow-strip-types': findModulePath('@babel/plugin-transform-flow-strip-types'),
       '@babel/preset-flow': findModulePath('@babel/preset-flow'),
@@ -149,14 +150,41 @@ config.resolver = {
   ],
 
   resolveRequest: (context, moduleName, platform) => {
-    // Add platform-specific handling for web
-    if (platform === 'web') {
-      // Handle native-only modules that shouldn't be imported on web
-      if (moduleName.includes('codegenNativeCommands') ||
-          moduleName.includes('/fabric/') ||
-          moduleName.includes('native-only') ||
-          // Add this condition for safe-area-context native specs
-          moduleName.includes('/specs/Native')) {
+    // Handle babel runtime helpers specifically
+    if (moduleName.includes('@babel/runtime/helpers/')) {
+      const helperPath = path.resolve(workspaceRoot, 'node_modules/@babel/runtime/helpers', 
+        moduleName.replace('@babel/runtime/helpers/', '') + '.js');
+      
+      if (fs.existsSync(helperPath)) {
+        return {
+          filePath: helperPath,
+          type: 'sourceFile',
+        };
+      }
+    }
+
+    // Handle SSR/node environment modules
+    if (moduleName.includes('expo-router/node/render')) {
+      const cleanPath = path.resolve(workspaceRoot, 'node_modules/expo-router/node/render.js');
+      return {
+        filePath: cleanPath,
+        type: 'sourceFile',
+      };
+    }
+
+    // Handle web/node platform cases
+    if (platform === 'web' || process.env.BABEL_ENV === 'node') {
+      if (
+        moduleName.includes('codegenNativeCommands') ||
+        moduleName.includes('/fabric/') ||
+        moduleName.includes('native-only') ||
+        moduleName.includes('/specs/Native') ||
+        moduleName.includes('setUpDOM') ||
+        moduleName.includes('InitializeCore') ||
+        // Add these to handle more node-specific modules
+        moduleName.includes('@expo/metro-runtime/src/setupHMR') ||
+        moduleName.includes('@expo/metro-runtime/src/effects')
+      ) {
         return {
           type: 'empty',
         };
@@ -201,6 +229,8 @@ config.transformer = {
       throwIfNamespace: false,
       enableBabelRuntime: true,
       enableBabelRCLookup: true,
+      // Add this to handle node environment properly
+      unstable_disableES6Transforms: process.env.BABEL_ENV === 'node',
     },
     resolver: {
       sourceExts: ['js', 'jsx', 'ts', 'tsx', 'json', 'cjs', 'mjs'],
