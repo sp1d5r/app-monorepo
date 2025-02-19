@@ -3,6 +3,7 @@ const exclusionList = require('metro-config/src/defaults/exclusionList');
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
+const { isAssetFile } = require('metro-resolver/src/utils/isAssetFile');
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
@@ -71,6 +72,93 @@ function getReactNativePath() {
 
 const reactNativePath = getReactNativePath();
 
+// Add this debug helper at the top
+function debugLog(message, ...args) {
+  console.log(`🔍 [Metro Debug] ${message}`, ...args);
+}
+
+// Add this before config creation
+function validateDependencies() {
+  const criticalDeps = [
+    '@expo/metro-runtime',
+    'metro-runtime',
+    'expo-router',
+    'react-native',
+    'react-dom'
+  ];
+
+  criticalDeps.forEach(dep => {
+    try {
+      require.resolve(dep);
+      debugLog(`✅ Found ${dep}`);
+    } catch (e) {
+      console.error(`❌ Missing critical dependency: ${dep}`);
+    }
+  });
+}
+
+validateDependencies();
+
+// Add this helper function
+function safeIsAssetFile(filePath) {
+  debugLog('Checking if asset file:', filePath);
+  if (!filePath || typeof filePath !== 'string') {
+    debugLog('Invalid file path received:', filePath);
+    return false;
+  }
+  return isAssetFile(filePath);
+}
+
+// Add this helper function near the top with other helpers
+function resolveAssetPath(modulePath) {
+  debugLog('Resolving asset path:', modulePath);
+  
+  // Handle relative asset paths
+  if (modulePath.includes('./assets/')) {
+    const absolutePath = path.resolve(projectRoot, modulePath.replace('./', ''));
+    debugLog('Resolved relative asset path to:', absolutePath);
+    return absolutePath;
+  }
+  
+  // Handle absolute asset paths
+  if (modulePath.includes('/assets/')) {
+    const absolutePath = path.resolve(projectRoot, 'assets', modulePath.split('/assets/')[1]);
+    debugLog('Resolved absolute asset path to:', absolutePath);
+    return absolutePath;
+  }
+  
+  return modulePath;
+}
+
+// Add this helper function to handle Babel runtime paths
+function resolveBabelRuntimePath(moduleName) {
+  debugLog('Resolving Babel runtime path:', moduleName);
+  
+  // Handle deep Babel runtime paths
+  if (moduleName.includes('@babel/runtime/helpers/')) {
+    const helperName = moduleName.split('@babel/runtime/helpers/').pop();
+    const possiblePaths = [
+      path.resolve(workspaceRoot, 'node_modules/@babel/runtime/helpers', helperName),
+      path.resolve(workspaceRoot, 'node_modules/@babel/runtime/helpers', `${helperName}.js`),
+      path.resolve(projectRoot, 'node_modules/@babel/runtime/helpers', helperName),
+      path.resolve(projectRoot, 'node_modules/@babel/runtime/helpers', `${helperName}.js`),
+    ];
+
+    for (const possiblePath of possiblePaths) {
+      if (fs.existsSync(possiblePath)) {
+        debugLog('✅ Found Babel helper at:', possiblePath);
+        return {
+          filePath: possiblePath,
+          type: 'sourceFile'
+        };
+      }
+    }
+    debugLog('⚠️ Babel helper not found:', moduleName);
+  }
+  return null;
+}
+
+// Update the resolver configuration
 config.resolver = {
   ...config.resolver,
   enableSymlinks: true,
@@ -98,6 +186,9 @@ config.resolver = {
       'react': findModulePath('react'),
       'react-dom': findModulePath('react-dom'),
       '@app-monorepo/ui': path.resolve(workspaceRoot, 'packages/ui'),
+      '@babel/runtime/helpers': path.resolve(workspaceRoot, 'node_modules/@babel/runtime/helpers'),
+      'apps/expo-app': projectRoot,
+      'expo-router': path.resolve(projectRoot, 'node_modules/expo-router'),
     },
     {
       get: (target, name) => {
@@ -149,16 +240,62 @@ config.resolver = {
     'db', 'sqlite', 'png', 'jpg', 'gif', 'ttf', 'otf', 'svg',
   ],
 
+  // Add asset resolution handling
   resolveRequest: (context, moduleName, platform) => {
-    // Handle babel runtime helpers specifically
-    if (moduleName.includes('@babel/runtime/helpers/')) {
-      const helperPath = path.resolve(workspaceRoot, 'node_modules/@babel/runtime/helpers', 
-        moduleName.replace('@babel/runtime/helpers/', '') + '.js');
-      
-      if (fs.existsSync(helperPath)) {
+    debugLog(`🔍 Resolving request:`, { moduleName, platform });
+
+    // Handle Expo entry point specifically for monorepo
+    if (moduleName === '../../apps/expo-app/App' || moduleName.includes('expo/AppEntry')) {
+      debugLog('📱 Resolving Expo entry point for monorepo');
+      return {
+        filePath: path.resolve(workspaceRoot, 'node_modules/expo-router/entry.js'),
+        type: 'sourceFile'
+      };
+    }
+
+    // Handle Babel runtime paths first
+    if (moduleName.includes('@babel/runtime/')) {
+      const resolved = resolveBabelRuntimePath(moduleName);
+      if (resolved) return resolved;
+    }
+
+    // Handle relative Babel runtime paths
+    if (moduleName.includes('../../') && moduleName.includes('/helpers/')) {
+      const helperName = moduleName.split('/helpers/').pop();
+      const resolved = resolveBabelRuntimePath(`@babel/runtime/helpers/${helperName}`);
+      if (resolved) return resolved;
+    }
+
+    // Handle asset paths
+    if (moduleName.includes('/assets/') || moduleName.includes('./assets/')) {
+      const resolvedPath = resolveAssetPath(moduleName);
+      if (fs.existsSync(resolvedPath)) {
+        debugLog('✅ Found asset at:', resolvedPath);
         return {
-          filePath: helperPath,
+          filePath: resolvedPath,
+          type: safeIsAssetFile(resolvedPath) ? 'asset' : 'sourceFile'
+        };
+      }
+      debugLog('⚠️ Asset not found at:', resolvedPath);
+    }
+
+    // Handle node: protocol modules
+    if (moduleName.startsWith('node:')) {
+      const bareModuleName = moduleName.replace('node:', '');
+      console.log(`🔄 Redirecting node: module: ${moduleName} -> ${bareModuleName}`);
+      
+      // Try to resolve the module without the node: prefix
+      try {
+        const resolvedPath = findModulePath(bareModuleName);
+        return {
+          filePath: resolvedPath,
           type: 'sourceFile',
+        };
+      } catch {
+        // If we can't find the module, return an empty module
+        console.log(`⚠️ Providing empty module for ${moduleName}`);
+        return {
+          type: 'empty',
         };
       }
     }
@@ -239,6 +376,39 @@ config.resolver = {
           type: 'empty',
         };
       }
+
+      // Handle native modules in web
+      if (
+        moduleName.includes('NativeModules') ||
+        moduleName.includes('NativeEventEmitter') ||
+        moduleName.includes('BatchedBridge') ||
+        moduleName.includes('RCTEventEmitter') ||
+        moduleName.includes('RCTDeviceEventEmitter')
+      ) {
+        return {
+          type: 'sourceFile',
+          content: `
+            // Mock native modules for web
+            module.exports = {
+              default: {},
+              NativeModules: {},
+              BatchedBridge: {
+                registerCallableModule: () => {},
+                registerLazyCallableModule: () => {},
+                getCallableModule: () => {},
+              },
+              NativeEventEmitter: class {},
+              RCTEventEmitter: {},
+              RCTDeviceEventEmitter: {
+                addListener: () => ({ remove: () => {} }),
+                emit: () => {},
+                removeAllListeners: () => {},
+                removeSubscription: () => {},
+              },
+            };
+          `
+        };
+      }
     }
 
     if (moduleName.includes('createAnimatedComponent')) {
@@ -264,6 +434,47 @@ config.resolver = {
     
     return context.resolveRequest(context, moduleName, platform);
   },
+
+  // Update asset resolution
+  resolveAsset: (context, moduleName, platform) => {
+    debugLog(`🎯 Asset Resolution Request:`, { moduleName, platform });
+    
+    if (!moduleName) {
+      debugLog('❌ No module name provided');
+      return null;
+    }
+
+    // Handle asset paths
+    if (moduleName.includes('/assets/') || moduleName.includes('./assets/')) {
+      const resolvedPath = resolveAssetPath(moduleName);
+      if (fs.existsSync(resolvedPath)) {
+        debugLog('✅ Found asset at:', resolvedPath);
+        return resolvedPath;
+      }
+      debugLog('⚠️ Asset not found at:', resolvedPath);
+    }
+
+    try {
+      const result = context.resolveAsset(context, moduleName, platform);
+      debugLog('📦 Default resolver result:', result);
+      return result;
+    } catch (error) {
+      debugLog('❌ Asset resolution failed:', error.message);
+      return null;
+    }
+  },
+
+  // Ensure assets directory is in watch folders
+  watchFolders: [
+    ...config.watchFolders,
+    path.resolve(projectRoot, 'assets'),
+  ].filter(Boolean),
+
+  // Add asset extensions explicitly
+  assetExts: [
+    ...config.resolver.assetExts || [],
+    'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf'
+  ],
 };
 
 config.transformer = {
@@ -277,18 +488,27 @@ config.transformer = {
       experimentalImportSupport: false,
       inlineRequires: true,
       throwIfNamespace: false,
-      enableBabelRuntime: true,
-      enableBabelRCLookup: true,
-      // Add this to handle node environment properly
-      unstable_disableES6Transforms: process.env.BABEL_ENV === 'node',
+      // Add runtime helpers configuration
+      runtime: {
+        helpers: true,
+        regenerator: true,
+        absoluteRuntime: path.resolve(workspaceRoot, 'node_modules/@babel/runtime'),
+      },
     },
     resolver: {
-      sourceExts: ['js', 'jsx', 'ts', 'tsx', 'json', 'cjs', 'mjs'],
-      assetExts: ['png', 'jpg', 'jpeg', 'gif', 'webp'],
-      platforms: ['ios', 'android', 'web'],
-      providesModuleNodeModules: ['react-native'],
+      assetExts: config.resolver.assetExts,
+      platforms: ['ios', 'android', 'web', 'native'],
     },
   }),
+  // Add these options
+  assetRegistryPath: 'react-native/Libraries/Image/AssetRegistry',
+  enableBabelRCLookup: true,
+  enableBabelRuntime: true,
+  // Add specific asset extensions
+  assetExts: [
+    ...config.transformer.assetExts || [],
+    'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'woff', 'woff2'
+  ],
 };
 
 config.server = {
@@ -305,5 +525,46 @@ config.server = {
     };
   },
 };
+
+// Add this helper function at the top of the file
+function validateAssetPaths() {
+  const requiredAssetPaths = [
+    path.resolve(projectRoot, 'assets'),
+    path.resolve(projectRoot, 'assets/images'),
+  ];
+
+  requiredAssetPaths.forEach(assetPath => {
+    if (!fs.existsSync(assetPath)) {
+      console.warn(`⚠️ Required asset directory missing: ${assetPath}`);
+      // Create the directory
+      fs.mkdirSync(assetPath, { recursive: true });
+    }
+  });
+}
+
+// Call it before creating the config
+validateAssetPaths();
+
+// Add this before exporting
+debugLog('Metro configuration initialized');
+debugLog('Project root:', projectRoot);
+debugLog('Watch folders:', config.watchFolders);
+
+// Add this before module.exports
+debugLog('Final resolver configuration:', {
+  assetExts: config.resolver.assetExts,
+  platforms: config.resolver.platforms,
+  watchFolders: config.watchFolders
+});
+
+// Add this before module.exports to verify asset paths
+debugLog('Asset directories:', {
+  assets: path.resolve(projectRoot, 'assets'),
+  images: path.resolve(projectRoot, 'assets/images'),
+  exists: {
+    assets: fs.existsSync(path.resolve(projectRoot, 'assets')),
+    images: fs.existsSync(path.resolve(projectRoot, 'assets/images'))
+  }
+});
 
 module.exports = config;
