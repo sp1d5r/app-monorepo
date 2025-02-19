@@ -163,6 +163,61 @@ config.resolver = {
       }
     }
 
+    // Handle SSR environment
+    if (platform === 'web' && process.env.BABEL_ENV === 'node') {
+      // Provide browser globals for SSR
+      if (moduleName === 'react-dom' || moduleName.includes('react-dom/')) {
+        console.log('🌐 Providing SSR environment for:', moduleName);
+        return {
+          type: 'sourceFile',
+          filePath: path.resolve(workspaceRoot, 'node_modules/react-dom/cjs/react-dom.development.js'),
+          // Inject our window mock before any code runs
+          content: `
+            // Mock the DOM environment check
+            var canUseDOM = true;
+            var window = {
+              document: {
+                createElement: () => ({}),
+                createTextNode: () => ({}),
+                querySelector: () => null,
+                querySelectorAll: () => [],
+              },
+              addEventListener: () => {},
+              removeEventListener: () => {},
+              getComputedStyle: () => ({}),
+              setTimeout: setTimeout,
+              clearTimeout: clearTimeout,
+              navigator: { userAgent: 'node' },
+            };
+            var document = window.document;
+            globalThis.window = window;
+            globalThis.document = document;
+
+            // Now load the actual module
+            ${fs.readFileSync(path.resolve(workspaceRoot, 'node_modules/react-dom/cjs/react-dom.development.js'), 'utf8')}
+          `
+        };
+      }
+
+      // Also handle react-dom/client specifically
+      if (moduleName.includes('react-dom/client')) {
+        return {
+          type: 'sourceFile',
+          content: `
+            // Provide a minimal client implementation
+            exports.createRoot = () => ({
+              render: () => {},
+              unmount: () => {},
+            });
+            exports.hydrateRoot = () => ({
+              render: () => {},
+              unmount: () => {},
+            });
+          `
+        };
+      }
+    }
+
     // Handle web platform cases
     if (platform === 'web') {
       // Handle native-only modules
